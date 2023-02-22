@@ -7,6 +7,7 @@ import GameScreen from './src/pages/GameScreen';
 import LogIn from './src/pages/LogIn';
 import Register from './src/pages/Register';
 import {Button, Menu, Divider, Provider} from 'react-native-paper';
+import auth from '@react-native-firebase/auth';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,19 +22,17 @@ function App() {
   const closeMenu = () => setVisible(false);
   const buttonRef = useRef(null);
 
-  const handleSignOut = () => {
-    
-  }
-
   return (
     <Provider>
       <UserContext.Provider value={{currentUser, setCurrentUser}}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="LogIn">
+            <Stack.Screen name="LogIn" component={LogIn} />
+            <Stack.Screen name="Register" component={Register} />
             <Stack.Screen
-              name="LogIn"
-              component={LogIn}
-              options={{
+              name="Home"
+              component={HomeScreen}
+              options={({navigation, route}) => ({
                 headerRight: () => (
                   // <Button
                   //   ref={buttonRef}
@@ -49,15 +48,26 @@ function App() {
                     visible={visible}
                     onDismiss={closeMenu}
                     anchor={
-                      <Button onPress={openMenu} icon="dots-vertical"></Button>
+                      <Button onPress={openMenu} icon="dots-vertical">
+                        {''}
+                      </Button>
                     }>
-                    <Menu.Item onPress={handleSignOut} title="Sign Out" />
+                    <Menu.Item
+                      onPress={() => {
+                        auth()
+                          .signOut()
+                          .then(() => console.log('User signed out!'));
+                        navigation.reset({
+                          index: 0,
+                          routes: [{name: 'LogIn'}],
+                        });
+                      }}
+                      title="Sign Out"
+                    />
                   </Menu>
                 ),
-              }}
+              })}
             />
-            <Stack.Screen name="Register" component={Register} />
-            <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Leaderboard" component={LeaderboardScreen} />
             <Stack.Screen name="Game" component={GameScreen} />
           </Stack.Navigator>
