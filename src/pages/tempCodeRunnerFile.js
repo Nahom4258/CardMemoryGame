@@ -1,0 +1,2 @@
+
+                setCurrentUser(user.user.uid)

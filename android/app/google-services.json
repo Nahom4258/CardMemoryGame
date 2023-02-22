@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "201208938742",
+    "project_id": "cardmemorygame-49fac",
+    "storage_bucket": "cardmemorygame-49fac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:201208938742:android:3d959c1c898334df142cd7",
+        "android_client_info": {
+          "package_name": "com.cardmemorygame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "201208938742-icj7ff2knqjalot97vijarnh7u16l5vc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3pDSbOt3hUNyzF6jvJAZLW1ZyczxCwZ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "201208938742-icj7ff2knqjalot97vijarnh7u16l5vc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
