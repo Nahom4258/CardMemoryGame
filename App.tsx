@@ -54,9 +54,10 @@ function App() {
                     }>
                     <Menu.Item
                       onPress={() => {
-                        auth()
-                          .signOut()
-                          .then(() => console.log('User signed out!'));
+                        // auth()
+                        //   .signOut()
+                        //   .then(() => console.log('User signed out!'));
+                        setCurrentUser(null);
                         navigation.reset({
                           index: 0,
                           routes: [{name: 'LogIn'}],

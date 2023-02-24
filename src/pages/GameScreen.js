@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect, useCallback, useContext } from 'rea
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
 import CardFlip from 'react-native-card-flip'
 import { UserContext } from '../../App'
+import api from '../api/api'
 import CardItem from '../components/CardItem.js'
 import SuccessModal from '../components/Modal.js'
 import useGame from '../helpers/useGame'
@@ -10,6 +11,7 @@ const CARDS_PER_ROW = 5
 
 function GameScreen({ route, navigation }) {
     const [is_game_loaded, setIsGameLoaded] = useState(false)
+    const { currentUser, setCurrentUser } = useContext(UserContext)
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -19,21 +21,34 @@ function GameScreen({ route, navigation }) {
         return () => clearTimeout(timeout)
     }, [])
 
-    useEffect(() => {
-        if (is_game_finished) {
-            console.log('game doneee, yeaaa')
-            firestore()
-                .collection('Users')
-                .doc(currentUser)
-                .update({
-                    highscore: rounds,
-                })
-                .then(() => {
-                    console.log('User updated!');
-                });
-        }
+    // useEffect(() => {
+    //     if (is_game_finished) {
+    //         console.log('game doneee, yeaaa')
+    //         firestore()
+    //             .collection('Users')
+    //             .doc(currentUser)
+    //             .update({
+    //                 highscore: rounds,
+    //             })
+    //             .then(() => {
+    //                 console.log('User updated!');
+    //             });
+    //         api.post('update_highscore', {
+    //             highscore: rounds,
+    //             id: currentUser,
+    //         }, { headers: { "content-type": "application/json" } })
+    //             .then(res => {
+    //                 if (res.data?.error) {
+    //                     console.log('error updating highscore')
+    //                     return
+    //                 }
 
-    }, [is_game_finished])
+    //                 console.log('HIGHSCORE UPDATED')
+    //             })
+    //             .catch(err => console.log(err))
+    //     }
+
+    // }, [is_game_finished])
 
 
     // const insets = useSafeAreaInsets()

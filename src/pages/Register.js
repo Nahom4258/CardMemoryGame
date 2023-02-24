@@ -4,6 +4,7 @@ import { Background, Button, TextInput } from 'react-native-paper'
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { UserContext } from '../../App';
+import api from '../api/api';
 
 
 function Register({ navigation }) {
@@ -13,51 +14,68 @@ function Register({ navigation }) {
     const [username, setUsername] = useState({ value: '', error: '' });
     const [uid, setUid] = useState('')
 
-    useEffect(() => {
-        // adding username with highscore = 0
-        if (uid != '') {
-            firestore()
-                .collection('Users')
-                .doc(uid)
-                .set({
-                    highscore: 0,
-                    username: username.value,
-                    user_id: uid
-                })
-                .then(() => {
-                    console.log('User added!');
-                });
+    // useEffect(() => {
+    //     // adding username with highscore = 0
+    //     if (uid != '') {
+    //         firestore()
+    //             .collection('Users')
+    //             .doc(uid)
+    //             .set({
+    //                 highscore: 0,
+    //                 username: username.value,
+    //                 user_id: uid
+    //             })
+    //             .then(() => {
+    //                 console.log('User added!');
+    //             });
 
-            setCurrentUser(uid)
+    //         setCurrentUser(uid)
 
-            navigation.reset({
-                index: 0,
-                routes: [{ name: 'Home' }],
-            })
-        }
+    //         navigation.reset({
+    //             index: 0,
+    //             routes: [{ name: 'Home' }],
+    //         })
+    //     }
 
-    }, [uid])
+    // }, [uid])
 
 
     const registerClicked = () => {
         // firebase registger user
-        auth()
-            .createUserWithEmailAndPassword(email.value, password.value)
-            .then((data) => {
-                console.log('User account created & signed in!: ', data.user.uid);
-                setUid(data.user.uid)
+        // auth()
+        //     .createUserWithEmailAndPassword(email.value, password.value)
+        //     .then((data) => {
+        //         console.log('User account created & signed in!: ', data.user.uid);
+        //         setUid(data.user.uid)
+        //     })
+        //     .catch(error => {
+        //         if (error.code === 'auth/email-already-in-use') {
+        //             console.log('That email address is already in use!');
+        //         }
+
+        //         if (error.code === 'auth/invalid-email') {
+        //             console.log('That email address is invalid!');
+        //         }
+
+        //         console.error(error);
+        //     });
+        api.post('signup', {
+            email: email,
+            username: username,
+            password: password
+        }, { headers: { "content-type": "application/json" } })
+            .then(res => {
+                if (res.data?.error) {
+                    console.log('sign up error')
+                    return
+                }
+
+                setCurrentUser(res.data.insertId)
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Home' }],
+                })
             })
-            .catch(error => {
-                if (error.code === 'auth/email-already-in-use') {
-                    console.log('That email address is already in use!');
-                }
-
-                if (error.code === 'auth/invalid-email') {
-                    console.log('That email address is invalid!');
-                }
-
-                console.error(error);
-            });
     };
 
     return (

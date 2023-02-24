@@ -5,6 +5,7 @@ import { GameReducer, initial_state } from '../helpers/gameReducer'
 import useRandomCards, { CARDS_NUMBER } from '../helpers/useRandomCards'
 import firestore from '@react-native-firebase/firestore';
 import { UserContext } from '../../App';
+import api from '../api/api';
 
 const useGame = (cardsRef) => {
   const [state, dispatch] = useReducer(GameReducer, initial_state)
@@ -24,17 +25,29 @@ const useGame = (cardsRef) => {
   useEffect(() => {
     if (!is_game_finished) return
 
-    // rootDispatch({ type: 'add_game_to_ranking', payload: rounds })
     console.log('game doneee, yeaaa')
-    firestore()
-      .collection('Users')
-      .doc(currentUser)
-      .update({
-        highscore: rounds,
+    // firestore()
+    //   .collection('Users')
+    //   .doc(currentUser)
+    //   .update({
+    //     highscore: rounds,
+    //   })
+    //   .then(() => {
+    //     console.log('User updated!');
+    //   });
+    api.post('update_highscore', {
+      highscore: rounds,
+      id: currentUser,
+    }, { headers: { "content-type": "application/json" } })
+      .then(res => {
+        if (res.data?.error) {
+          console.log('error updating highscore')
+          return
+        }
+
+        console.log('HIGHSCORE UPDATED')
       })
-      .then(() => {
-        console.log('User updated!');
-      });
+      .catch(err => console.log(err))
     setTimeout(() => {
       console.log('doneee')
       dispatch({ type: 'show_modal' })

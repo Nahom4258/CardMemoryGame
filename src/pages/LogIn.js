@@ -3,6 +3,8 @@ import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
 import { Snackbar, Button, TextInput } from 'react-native-paper'
 import auth from '@react-native-firebase/auth';
 import { UserContext } from '../../App';
+import api from "axios";
+import axios from '../api/api';
 
 function LogIn({ navigation }) {
     const [email, setEmail] = useState({ value: '', error: '' });
@@ -13,31 +15,55 @@ function LogIn({ navigation }) {
     const _onLoginPressed = () => {
         console.log('log in pressed')
         // firebase check
-        auth()
-            .signInWithEmailAndPassword('nhabtamu42@gmail.com', 'NahomHabtamu')
-            .then((user) => {
+        // auth()
+        //     .signInWithEmailAndPassword('nhabtamu42@gmail.com', 'NahomHabtamu')
+        //     .then((user) => {
+        //         console.log('USER SIGNED INNNN!');
+        //         console.log('user: ', user.user.uid)
+        //         console.log('current user context', currentUser)
+        //         setCurrentUser(user.user.uid)
+        //         navigation.reset({
+        //             index: 0,
+        //             routes: [{ name: 'Home' }],
+        //         })
+        //     })
+        //     .catch(error => {
+        //         console.log('ERRRORRRR!! LOGIN ')
+        //         setError(true)
+        //         if (error.code === 'auth/email-already-in-use') {
+        //             console.log('That email address is already in use!');
+        //         }
+
+        //         if (error.code === 'auth/invalid-email') {
+        //             console.log('That email address is invalid!');
+        //         }
+
+        //         console.error(error);
+        //     });
+        axios.post('login', {
+            email: email,
+            password: password
+        }, { headers: { "content-type": "application/json" } })
+            .then(res => {
+                console.log('inside axios')
+                if (res.data?.error) {
+                    console.log('get inside')
+                    return
+                }
+
                 console.log('USER SIGNED INNNN!');
-                console.log('user: ', user.user.uid)
+                console.log('user: ', res.data)
                 console.log('current user context', currentUser)
-                setCurrentUser(user.user.uid)
+                setCurrentUser(res.data[0].id)
                 navigation.reset({
                     index: 0,
                     routes: [{ name: 'Home' }],
                 })
             })
-            .catch(error => {
-                console.log('ERRRORRRR!! LOGIN ')
-                setError(true)
-                if (error.code === 'auth/email-already-in-use') {
-                    console.log('That email address is already in use!');
-                }
-
-                if (error.code === 'auth/invalid-email') {
-                    console.log('That email address is invalid!');
-                }
-
-                console.error(error);
-            });
+            .catch(err => {
+                console.log('log in errors')
+                console.log(err)
+            })
     };
 
     return (

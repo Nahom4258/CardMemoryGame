@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native'
 import { DataTable } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import { UserContext } from '../../App';
+import api from '../api/api';
 
 function Leaderboard() {
   const { currentUser, setCurrentUser } = useContext(UserContext)
@@ -11,13 +12,19 @@ function Leaderboard() {
   useEffect(() => {
     console.log('leaderboard useeffect: ', currentUser)
     // const usersCollection = firestore().collection('Users');
-    firestore().collection('Users').orderBy('highscore', 'asc').get()
-      .then((data) => {
-        console.log('data: ', data._docs[0])
-        setLeaderboard(data._docs)
-        // leaderboard.sort((a, b) => (a.last_nom < b.last_nom) ? 1 : ((b.last_nom < a.last_nom) ? -1 : 0))
+    // firestore().collection('Users').orderBy('highscore', 'asc').get()
+    //   .then((data) => {
+    //     console.log('data: ', data._docs[0])
+    //     setLeaderboard(data._docs)
+    //   })
+    //   .catch((err) => console.log(err))
+
+
+    api.get('leaderboard')
+      .then(res => {
+        setLeaderboard(res.data)
       })
-      .catch((err) => console.log(err))
+      .catch(err => console.log(err))
   }, [])
 
 
@@ -27,7 +34,7 @@ function Leaderboard() {
       <DataTable>
         <DataTable.Header style={styles.tableHeader}>
           <DataTable.Title >Username</DataTable.Title>
-          <DataTable.Title numeric>Score</DataTable.Title>
+          <DataTable.Title numeric>Tries</DataTable.Title>
         </DataTable.Header>
 
 
@@ -38,13 +45,19 @@ function Leaderboard() {
           </DataTable.Row>
         )} */}
         {leaderboard.map((item, i) =>
-          item._data.highscore == 0 ? '' :
+          item.highscore == 0 ? '' :
             (
-              <DataTable.Row key={i} style={{ backgroundColor: item._data.user_id == currentUser ? '#ca5cdd' : 'white' }}>
-                <DataTable.Cell>{item._data.username}</DataTable.Cell>
-                <DataTable.Cell numeric >{item._data.highscore}</DataTable.Cell>
+              // <DataTable.Row key={i} style={{ backgroundColor: item._data.user_id == currentUser ? '#ca5cdd' : 'white' }}>
+              //   <DataTable.Cell>{item._data.username}</DataTable.Cell>
+              //   <DataTable.Cell numeric >{item._data.highscore}</DataTable.Cell>
+              // </DataTable.Row>
+              <DataTable.Row key={i} style={{ backgroundColor: item.id == currentUser ? '#ca5cdd' : 'white' }}>
+                <DataTable.Cell>{item.username}</DataTable.Cell>
+                <DataTable.Cell numeric >{item.highscore}</DataTable.Cell>
               </DataTable.Row>
-            ))}
+            ))
+
+        }
 
       </DataTable>
     </ScrollView>
